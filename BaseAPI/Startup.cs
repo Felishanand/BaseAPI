@@ -64,13 +64,18 @@ namespace BaseAPI
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseSecurityHeadersMiddleware(
-               new SecurityHeadersBuilder()
-                   .AddDefaultSecurePolicy()
-                   .AddCustomHeader("X-My-Custom-Header", Guid.NewGuid().ToString())
-                   );
+            //app.UseSecurityHeadersMiddleware(
+            //   new SecurityHeadersBuilder()
+            //       .AddDefaultSecurePolicy()
+            //       .AddCustomHeader("X-My-Custom-Header", Guid.NewGuid().ToString())
+            //       );
 
-            app.UseCustomMiddleware();
+            app.UseLoggerMiddleware(
+                new CustomHeaderBuilder()
+                .AddDefaultSecurePolicy()
+                .AddCustomHeader("ObjId", Guid.NewGuid().ToString()));
+
+            //app.UseCustomMiddleware();
 
             //app.UseMiddleware<SerilogMiddleware>();
 

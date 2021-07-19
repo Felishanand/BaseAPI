@@ -21,10 +21,21 @@ namespace BaseAPI.Controllers
         private readonly ILogger<WeatherForecastController> _logger;
         private HttpClient _client;
 
+        private string CorreleationId;
+
         public WeatherForecastController(ILogger<WeatherForecastController> logger, IHttpClientFactory httpClientFactory)
         {
             _logger = logger;
-            _client = httpClientFactory.CreateClient();
+            _client = httpClientFactory.CreateClient();                       
+        }
+
+        private void AddCustomHeader()
+        {
+            Request.Headers.TryGetValue("CorrelationId", out var objCorreleationId).ToString();
+
+            CorreleationId = objCorreleationId;
+
+            _client.DefaultRequestHeaders.Add("CorrelationId", CorreleationId);
         }
 
         [HttpGet]
@@ -44,33 +55,105 @@ namespace BaseAPI.Controllers
 
         [HttpGet]
         [Route("Test")]
-        public async Task<IActionResult> GetData()        
+        public async Task<IActionResult> GetData() 
         {
             var requestEndPoint = "https://localhost:44387/weatherforecast/Test";
 
-            var objCorrelationId = Request.Headers.TryGetValue("CorrelationId", out var objCorreleationId).ToString();
-
-            var headerValue = _client.DefaultRequestHeaders.ToList();
-
-            _logger.LogInformation($"Get Data From Micro Service 1 {requestEndPoint} - Started By {objCorrelationId}");
+            _logger.LogInformation($"Get Data From Micro Service 1 {requestEndPoint} - Started By {CorreleationId}");
 
             try
             {
                 // Content from BBC One: Dr. Who website (©BBC)
                 var request = new HttpRequestMessage(HttpMethod.Get,
-                   requestEndPoint);                              
+                   requestEndPoint);
+
+                //AddCustomHeader();
 
                 var response = await _client.SendAsync(request);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var data =  await response.Content.ReadAsStringAsync();
+                    var data = await response.Content.ReadAsStringAsync();                    
 
-                    _logger.LogInformation($"Get Data From Micro Service 1 {requestEndPoint} - Completed By {objCorrelationId}");
+                    _logger.LogInformation($"Get Data From Micro Service 1 {requestEndPoint} - Completed By {CorreleationId}");
 
-                    return Ok(data);
+                    return Ok($"{data} and Request by {CorreleationId}");
                 }
-                
+
+                return BadRequest(response.StatusCode);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error from GetData - {requestEndPoint}: {ex.Message}");
+                throw;
+            }
+
+        }       
+
+        [HttpGet]
+        [Route("Test1")]
+        public async Task<IActionResult> GetData1()
+        {
+            var requestEndPoint = "https://localhost:44387/weatherforecast/Test";           
+
+            _logger.LogInformation($"Get Data From Micro Service 1 {requestEndPoint} - Started By {CorreleationId}");
+
+            try
+            {
+                // Content from BBC One: Dr. Who website (©BBC)
+                var request = new HttpRequestMessage(HttpMethod.Get,
+                   requestEndPoint);
+
+                AddCustomHeader();
+
+                  var response = await _client.SendAsync(request);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var data = await response.Content.ReadAsStringAsync();
+
+                    _logger.LogInformation($"Get Data From Micro Service 1 {requestEndPoint} - Completed By {CorreleationId}");
+
+                    return Ok($"{data} and Request by {CorreleationId}");
+                }
+
+                return BadRequest(response.StatusCode);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error from GetData - {requestEndPoint}: {ex.Message}");
+                throw;
+            }
+
+        }
+
+        [HttpGet]
+        [Route("Test2")]
+        public async Task<IActionResult> GetData2()
+        {
+            var requestEndPoint = "https://localhost:44387/weatherforecast/Test";         
+
+            _logger.LogInformation($"Get Data From Micro Service 1 {requestEndPoint} - Started By {CorreleationId}");
+
+            try
+            {
+                // Content from BBC One: Dr. Who website (©BBC)
+                var request = new HttpRequestMessage(HttpMethod.Get,
+                   requestEndPoint);
+
+                AddCustomHeader();
+
+                var response = await _client.SendAsync(request);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var data = await response.Content.ReadAsStringAsync();
+
+                    _logger.LogInformation($"Get Data From Micro Service 1 {requestEndPoint} - Completed By {CorreleationId}");
+
+                    return Ok($"{data} and Request by {CorreleationId}");
+                }
+
                 return BadRequest(response.StatusCode);
             }
             catch (Exception ex)
