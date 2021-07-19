@@ -1,0 +1,26 @@
+2021-07-19 12:23:48.054 +05:30 [INF]  Application started. Press Ctrl+C to shut down.
+2021-07-19 12:23:48.236 +05:30 [INF]  Hosting environment: Development
+2021-07-19 12:23:48.242 +05:30 [INF]  Content root path: C:\PoC\BaseAPI\BaseAPI
+2021-07-19 12:23:48.286 +05:30 [ERR]  An unhandled exception has occurred while executing the request.
+System.ArgumentNullException: Value cannot be null. (Parameter 'source')
+   at System.Linq.ThrowHelper.ThrowArgumentNullException(ExceptionArgument argument)
+   at System.Linq.Enumerable.TryGetFirst[TSource](IEnumerable`1 source, Boolean& found)
+   at System.Linq.Enumerable.First[TSource](IEnumerable`1 source)
+   at BaseAPI.Middlewares.CustomMiddleware.Invoke(HttpContext httpContext) in C:\PoC\BaseAPI\BaseAPI\Middlewares\CustomMiddleware.cs:line 45
+   at BaseAPI.Middlewares.SecurityHeadersMiddleware.Invoke(HttpContext context) in C:\PoC\BaseAPI\BaseAPI\Middlewares\SecurityHeadersMiddleware.cs:line 65
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
+2021-07-19 12:24:35.610 +05:30 [INF]  Application started. Press Ctrl+C to shut down.
+2021-07-19 12:24:35.675 +05:30 [INF]  Hosting environment: Development
+2021-07-19 12:24:35.678 +05:30 [INF]  Content root path: C:\PoC\BaseAPI\BaseAPI
+2021-07-19 12:24:35.820 +05:30 [INF]  Get Data From Micro Service 1 https://localhost:44387/weatherforecast/Test - Started By False
+2021-07-19 12:24:35.838 +05:30 [INF]  Start processing HTTP request GET "https://localhost:44387/weatherforecast/Test"
+2021-07-19 12:24:35.842 +05:30 [INF]  Sending HTTP request GET "https://localhost:44387/weatherforecast/Test"
+2021-07-19 12:24:45.346 +05:30 [INF]  Received HTTP response after 9498.3416ms - "OK"
+2021-07-19 12:24:45.349 +05:30 [INF]  End processing HTTP request after 9519.992ms - "OK"
+2021-07-19 12:24:46.299 +05:30 [INF]  Get Data From Micro Service 1 https://localhost:44387/weatherforecast/Test - Completed By False
+2021-07-19 12:25:01.984 +05:30 [INF]  Get Data From Micro Service 1 https://localhost:44387/weatherforecast/Test - Started By False
+2021-07-19 12:27:01.460 +05:30 [INF]  Start processing HTTP request GET "https://localhost:44387/weatherforecast/Test"
+2021-07-19 12:27:01.463 +05:30 [INF]  Sending HTTP request GET "https://localhost:44387/weatherforecast/Test"
+2021-07-19 12:27:11.400 +05:30 [INF]  Received HTTP response after 9935.6262ms - "OK"
+2021-07-19 12:27:11.403 +05:30 [INF]  End processing HTTP request after 9948.8115ms - "OK"
+2021-07-19 12:27:11.407 +05:30 [INF]  Get Data From Micro Service 1 https://localhost:44387/weatherforecast/Test - Completed By False

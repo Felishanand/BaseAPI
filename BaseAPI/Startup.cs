@@ -16,6 +16,7 @@ using BaseAPI.Middlewares;
 using System.IO;
 using Microsoft.Extensions.Options;
 using System.Net.Http;
+using BaseAPI.Middlewares.Extension;
 
 namespace BaseAPI
 {
@@ -42,15 +43,15 @@ namespace BaseAPI
                     outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {CorrelationId} {Message:lj}{NewLine}{Exception}")
                 .CreateLogger();
 
-            //services.AddHttpClient();
+            services.AddHttpClient();
 
-            var id = Guid.NewGuid().ToString();
+            //var id = Guid.NewGuid().ToString();
 
-            ////Configure Http client
-            services.AddHttpClient(Options.DefaultName, c =>
-            {
-                c.DefaultRequestHeaders.Add("CorrelationId", id);
-            });
+            //////Configure Http client
+            //services.AddHttpClient(Options.DefaultName, c =>
+            //{
+            //    c.DefaultRequestHeaders.Add("CorrelationId", id);
+            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,6 +63,12 @@ namespace BaseAPI
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSecurityHeadersMiddleware(
+               new SecurityHeadersBuilder()
+                   .AddDefaultSecurePolicy()
+                   .AddCustomHeader("X-My-Custom-Header", Guid.NewGuid().ToString())
+                   );
 
             app.UseCustomMiddleware();
 
