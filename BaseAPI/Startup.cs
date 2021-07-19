@@ -14,6 +14,8 @@ using Serilog;
 using Serilog.Events;
 using BaseAPI.Middlewares;
 using System.IO;
+using Microsoft.Extensions.Options;
+using System.Net.Http;
 
 namespace BaseAPI
 {
@@ -40,10 +42,15 @@ namespace BaseAPI
                     outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {CorrelationId} {Message:lj}{NewLine}{Exception}")
                 .CreateLogger();
 
+            //services.AddHttpClient();
 
-            //Configure Http client
+            var id = Guid.NewGuid().ToString();
 
-            services.AddHttpClient();
+            ////Configure Http client
+            services.AddHttpClient(Options.DefaultName, c =>
+            {
+                c.DefaultRequestHeaders.Add("CorrelationId", id);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -56,14 +63,15 @@ namespace BaseAPI
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCustomMiddleware();
+
+            //app.UseMiddleware<SerilogMiddleware>();
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
             app.UseAuthorization();
-
-            app.UseMiddleware<SerilogMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {

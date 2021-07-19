@@ -19,12 +19,12 @@ namespace BaseAPI.Controllers
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
-        private readonly IHttpClientFactory _clientFactory;
+        private HttpClient _client;
 
         public WeatherForecastController(ILogger<WeatherForecastController> logger, IHttpClientFactory httpClientFactory)
         {
             _logger = logger;
-            _clientFactory = httpClientFactory;
+            _client = httpClientFactory.CreateClient();
         }
 
         [HttpGet]
@@ -44,34 +44,33 @@ namespace BaseAPI.Controllers
 
         [HttpGet]
         [Route("Test")]
-        public async Task<IActionResult> GetData()
-        
+        public async Task<IActionResult> GetData()        
         {
             var requestEndPoint = "https://localhost:44387/weatherforecast/Test";
 
-            _logger.LogInformation($"Get Data From Micro Service 1 {requestEndPoint} - Started");
+            var objCorrelationId = Request.Headers.TryGetValue("CorrelationId", out var objCorreleationId).ToString();
+
+            var headerValue = _client.DefaultRequestHeaders.ToList();
+
+            _logger.LogInformation($"Get Data From Micro Service 1 {requestEndPoint} - Started By {objCorrelationId}");
 
             try
             {
                 // Content from BBC One: Dr. Who website (©BBC)
                 var request = new HttpRequestMessage(HttpMethod.Get,
-                   requestEndPoint);
+                   requestEndPoint);                              
 
-                var client = _clientFactory.CreateClient();
-
-                Request.Headers.TryGetValue("CorrelationId", out var correlationId).ToString();
-
-                var id = correlationId;
-
-                var response = await client.SendAsync(request);
+                var response = await _client.SendAsync(request);
 
                 if (response.IsSuccessStatusCode)
-                {                    
-                    var data = await response.Content.ReadAsStringAsync();
+                {
+                    var data =  await response.Content.ReadAsStringAsync();
+
+                    _logger.LogInformation($"Get Data From Micro Service 1 {requestEndPoint} - Completed By {objCorrelationId}");
 
                     return Ok(data);
                 }
-
+                
                 return BadRequest(response.StatusCode);
             }
             catch (Exception ex)
