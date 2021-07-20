@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -55,7 +56,43 @@ namespace BaseAPI.Controllers
 
         [HttpGet]
         [Route("Test")]
-        public async Task<IActionResult> GetData() 
+        public async Task<IActionResult> GetData()
+        {
+            var requestEndPoint = "https://localhost:44387/weatherforecast/Sample";
+
+            _logger.LogInformation($"Get Data From Micro Service 1 {requestEndPoint} - Started By {CorreleationId}");
+
+            try
+            {
+                // Content from BBC One: Dr. Who website (©BBC)
+                var request = new HttpRequestMessage(HttpMethod.Get,
+                   requestEndPoint);               
+
+                var response = await _client.SendAsync(request);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var data = await response.Content.ReadAsStringAsync();
+
+                    _logger.LogInformation($"Get Data From Micro Service 1 {requestEndPoint} - Completed By {CorreleationId}");
+
+                    return Ok($"{data} and Request by {CorreleationId}");
+                }
+
+                return BadRequest(response.StatusCode);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error from GetData - {requestEndPoint}: {ex.Message}");
+                throw;
+            }
+
+        }
+
+
+        [HttpGet]
+        [Route("Test1")]
+        public async Task<IActionResult> GetData1() 
         {
             var requestEndPoint = "https://localhost:44387/weatherforecast/Test";
 
@@ -91,8 +128,8 @@ namespace BaseAPI.Controllers
         }       
 
         [HttpGet]
-        [Route("Test1")]
-        public async Task<IActionResult> GetData1()
+        [Route("Test2")]
+        public async Task<IActionResult> GetData2()
         {
             var requestEndPoint = "https://localhost:44387/weatherforecast/Test";           
 
@@ -128,8 +165,8 @@ namespace BaseAPI.Controllers
         }
 
         [HttpGet]
-        [Route("Test2")]
-        public async Task<IActionResult> GetData2()
+        [Route("Test3")]
+        public async Task<IActionResult> GetData3()
         {
             var requestEndPoint = "https://localhost:44387/weatherforecast/Test";         
 

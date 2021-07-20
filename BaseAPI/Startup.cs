@@ -43,7 +43,28 @@ namespace BaseAPI
                     outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {CorrelationId} {Message:lj}{NewLine}{Exception}")
                 .CreateLogger();
 
-            services.AddHttpClient();
+            //services.AddHttpClient(Options.DefaultName, client =>
+            //{   
+            //    client.DefaultRequestHeaders.Add("StartupHeader", Guid.NewGuid().ToString());
+            //});
+
+            services.AddHttpClient(Options.DefaultName, client =>
+             {
+                 client.DefaultRequestHeaders.Add("StartupHeader", Guid.NewGuid().ToString());
+             })
+                 .ConfigurePrimaryHttpMessageHandler(() =>
+                 {
+                     if ((Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? string.Empty).Equals("Development"))
+                     {
+                         return new HttpClientHandler
+                         {
+                             ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; }
+                         };
+                     }
+
+                     return new HttpClientHandler();
+                 });
+                
 
             //var id = Guid.NewGuid().ToString();
 
