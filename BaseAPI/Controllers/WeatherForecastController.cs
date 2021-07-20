@@ -67,7 +67,7 @@ namespace BaseAPI.Controllers
                 var request = new HttpRequestMessage(HttpMethod.Get,
                    requestEndPoint);
 
-                //AddCustomHeader();
+                AddCustomHeader();
 
                 var response = await _client.SendAsync(request);
 

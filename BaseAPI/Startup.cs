@@ -70,14 +70,14 @@ namespace BaseAPI
             //       .AddCustomHeader("X-My-Custom-Header", Guid.NewGuid().ToString())
             //       );
 
-            app.UseLoggerMiddleware(
-                new CustomHeaderBuilder()
-                .AddDefaultSecurePolicy()
-                .AddCustomHeader("ObjId", Guid.NewGuid().ToString()));
+            //app.UseLoggerMiddleware(
+            //    new CustomHeaderBuilder()
+            //    .AddDefaultSecurePolicy()
+            //    .AddCustomHeader("ObjId", Guid.NewGuid().ToString()));
 
             //app.UseCustomMiddleware();
 
-            //app.UseMiddleware<SerilogMiddleware>();
+            app.UseMiddleware<SerilogMiddleware>();
 
             app.UseHttpsRedirection();
 
